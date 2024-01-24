@@ -13,6 +13,10 @@ The full tutorial can be found on our blog, which you can find here:
 [Jerhub blog](https://jerhub/blog)
 
 
+Additionally, youtube videos are being made with more detailed explanations,
+and you can follow along with the coding process.
+
+
 Each section of the tutorial will build upon what we have learned in the
 previous sections, so it is recommended to follow along sequentially.
 

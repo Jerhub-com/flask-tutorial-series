@@ -1,14 +1,7 @@
-# Flask-Scaffold
-A boiler-plate, get up and running quickly Flask application. I frequently use
-this as a jumping-off point for apps I make for Jerhub. No bells and whistles
-or kitchen sink included - this is meant to be modified and added to.
-
-
-This is also the starting-point for a tutorial series I am creating, which you
-can follow along starting with this document.
-
-## Requirements
-Python version >= 3.10.5
+# Part 1: Flask-Scaffold
+Covers installation and configuration, and provides the foundation from which we
+build the application, including a basic app with a sqlite database, a user
+model, and a login page.
 
 ## Installation and Configuration
 
