@@ -10,7 +10,7 @@ information about how to use it.
 
 
 The full tutorial can be found on our blog, which you can find here:
-[Jerhub blog](https://jerhub/blog)
+[Jerhub blog](https://jerhub.com/blog)
 
 
 Additionally, youtube videos are being made with more detailed explanations,
