@@ -147,9 +147,145 @@ class Ses():
             logger.warning(f'SES failed due to {e}')
 ```
 
-**WORKING HERE**
+Lastly, let's implement a method to send the email. This is patterned after the
+AWS example, so it will be familiar by now:
 
-- add ContactForm to core/forms.py - (done needs docs)
-- add import ContactForm to core/views.py - (done needs docs)
-- add function contact to core/views.py - (WIP needs docs)
+```
+def send_email(self, subject, body, body_html, client_address) -> bool:
+        """
+        Sends an email using the boto3 client and the provided details.
+
+        Example:
+            ses.send_email(subject='hello',
+                       body='Hello!',
+                       body_html='<p>Hello!</p>',
+                       client_address='bob@example.com',
+                       )
+        """
+        success = False
+
+        try:
+            response = self.client.send_email(
+                Destination={
+                    'ToAddresses': [client_address,],
+                },
+                Message={
+                    'Body': {
+                        'Html': {
+                            'Charset': self.charset,
+                            'Data': body_html,
+                        },
+                        'Text': {
+                            'Charset': self.charset,
+                            'Data': body,
+                        },
+                    },
+                    'Subject': {
+                        'Charset': self.charset,
+                        'Data': subject,
+                    },
+                },
+                Source=self.email,
+            )
+
+        except ClientError as e:
+            logger.warning(e.response['Error']['Message'])
+
+        else:
+            logger.warning(f'Email sent. Message ID: {response["MessageId"]}')
+            success = True
+
+        return success
+```
+
+## Step 4: Create a Flask contact form
+Compared to the last steps, this part is pretty easy. Open the `core/forms.py`
+file, and make a few adjustments. First, we are going to need a new import from
+wtforms:
+
+```
+from wtforms import TextAreaField
+```
+
+Next, we need a new class based on FlaskForm:
+
+```
+class ContactForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    name = StringField('Name', validators=[DataRequired()])
+    message = TextAreaField('Message', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+    recaptcha = RecaptchaField()
+```
+
+And that's it; the form is ready to use.
+
+## Step 5: Add a view for displaying the contact form
+Open up the `scaffold/core/views.py` file. We will be needing a couple of new
+imports:
+```
+from scaffold.core.forms import ContactForm
+from scaffold.utilities.ses import Ses
+```
+
+Then we need to add the route:
+```
+@core.route('/contact', methods=['GET', 'POST'])
+def contact():
+    form = ContactForm()
+
+    if form.validate_on_submit():
+        email = form.email.data
+        name = form.name.data + ' contact form submission'
+        message = form.message.data
+
+        # Instantiate the SES wrapper.
+        ses = Ses()
+
+        # Send an email to your verified SES email address.
+        email_1 = ses.send_email(subject=name,
+                                 body=message,
+                                 client_address=ses.email)
+        
+        if email_1:  # Only send user email if we got their message.
+            # Send an email to the user acknowledging receipt of their message.
+            subject = 'Thanks for contacting us.'
+            body = f'''
+                This is an automated response confirming our receipt of your
+                contact form submission. Please do not reply to this message, as
+                replies are not monitored for this address. Your message will be
+                reviewed by a human and we'll get back to you soon!
+            '''
+            body_html = f'''
+                <html>
+                <head></head>
+                <body>
+                <h1>{subject}</h1>
+                <p>
+                {body}
+                </p><br>
+                <p>Best Regards,</p>
+                <p>Mailbot</p>
+                </body>
+                </html>
+            '''
+            email_2 = ses.send_email(subject=subject,
+                                    body=body,
+                                    body_html=body_html,
+                                    client_address=email)
+
+        if email_1 and email_2:  # If either email failed, user should know.
+            return render_template('contact_thanks.html')
+        else:
+            return render_template('email_problem.html')
+    
+    return render_template('contact.html', form=form)
+```
+
+## Step 6: Add new templates to support the contact view
+
+
+**WORKING HERE**
 - add contact.html template - (not started)
+- add email_problem.html template - (not started)
+- add contact_thanks.html template - (not started)

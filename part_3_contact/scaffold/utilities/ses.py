@@ -61,9 +61,9 @@ class Ses():
 
         Example:
             ses.send_email(subject='hello',
-                       body='Hello!',
-                       body_html='<p>Hello!</p>',
-                       client_address='bob@example.com',
+                           body='Hello!',
+                           body_html='<p>Hello!</p>',
+                           client_address='bob@example.com',
                        )
         """
         success = False

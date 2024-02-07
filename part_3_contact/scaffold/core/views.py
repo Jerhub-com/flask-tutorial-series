@@ -7,6 +7,7 @@ from werkzeug.exceptions import HTTPException
 from scaffold import db
 from scaffold.models import User
 from scaffold.core.forms import LoginForm, ContactForm
+from scaffold.utilities.ses import Ses
 
 
 core = Blueprint('core', __name__)
@@ -53,7 +54,65 @@ def logout():
 @core.route('/contact', methods=['GET', 'POST'])
 def contact():
     form = ContactForm()
-    return render_template('contact.html',)
+
+    if form.validate_on_submit():
+        email = form.email.data
+        name = form.name.data + ' contact form submission'
+        message = form.message.data
+
+        # Instantiate the SES wrapper.
+        ses = Ses()
+
+        # Send an email to your verified SES email address.
+        email_1 = ses.send_email(subject=name,
+                                 body=message,
+                                 client_address=ses.email)
+        
+        if email_1:  # Only send user email if we got their message.
+            # Send an email to the user acknowledging receipt of their message.
+            subject = 'Thanks for contacting us.'
+            body = f'''
+                This is an automated response confirming our receipt of your
+                contact form submission. Please do not reply to this message, as
+                replies are not monitored for this address. Your message will be
+                reviewed by a human and we'll get back to you soon!
+            '''
+            body_html = f'''
+                <html>
+                <head></head>
+                <body>
+                <h1>{subject}</h1>
+                <p>
+                {body}
+                </p><br>
+                <p>Best Regards,</p>
+                <p>Mailbot</p>
+                </body>
+                </html>
+            '''
+            email_2 = ses.send_email(subject=subject,
+                                    body=body,
+                                    body_html=body_html,
+                                    client_address=email)
+
+        if email_1 and email_2:  # If either email failed, user should know.
+            return render_template('contact_thanks.html')
+        else:
+            return render_template('email_problem.html')
+    
+    return render_template('contact.html', form=form)
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Exceptions
 @core.app_errorhandler(HTTPException)
