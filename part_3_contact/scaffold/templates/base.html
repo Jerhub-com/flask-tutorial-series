@@ -21,6 +21,9 @@
             </button>
             <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav">
+                    <li>
+                        <a class="nav-link" href={{url_for('core.contact')}}>Contact</a>
+                    </li>
                     {% if current_user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href={{url_for('core.logout')}}>Logout</a>

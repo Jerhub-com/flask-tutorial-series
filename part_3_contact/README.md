@@ -283,9 +283,19 @@ def contact():
 ```
 
 ## Step 6: Add new templates to support the contact view
+In step 5 we added the view function which you probably noticed requires three
+new templates:
 
+- contact.html - Main contact page with the form
+- contact_thanks.html - Success page
+- email_problem.html - Failure page
 
-**WORKING HERE**
-- add contact.html template - (not started)
-- add email_problem.html template - (not started)
-- add contact_thanks.html template - (not started)
+Since you already understand creating templates and forms from part 1 of the
+tutorial, these will be left as an excercise. If you get stuck, you can refer
+to the templates we have created in this repo.
+
+## Step 7: Add link to contact page in the navigation bar
+Whew! That may have felt like kind of a lot, and you aren't wrong. Luckily,
+the last step in this section is easy. All you need to do is locate the
+navigation bar in the base.html template, and add a new list item to the
+unordered list with a link to your shiny new contact page. All done!
