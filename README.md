@@ -21,13 +21,15 @@ Each section of the tutorial will build upon what we have learned in the
 previous sections, so it is recommended to follow along sequentially.
 
 
-**Part 1 - flask-scaffold** - Covers installation and configuration, and
+**Part 1 - Scaffold** - Covers installation and configuration, and
 provides the foundation from which we build the application, including a basic
 app with a sqlite database, a user model, and a login page.
 
 
-**Part 2 - recaptcha** - Covers bot mitigation by adding Google Recaptcha
+**Part 2 - Recaptcha** - Covers bot mitigation by adding Google Recaptcha
 functionality.
+
+**Part 3 - Contact** - Covers adding a working contact form with AWS SES.
 
 ## Requirements
 In order to follow along successfully, you will need Python version >= 3.10.5

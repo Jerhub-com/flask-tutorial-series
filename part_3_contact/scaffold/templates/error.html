@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex-container">
+    <div class="card">
+        <div>
+            <h1 style="text-align: center;">{{code}}</h1><br><hr><br>
+            <h2 style="text-align: center;">It is pitch black. You are likely to be eaten by a grue.</h2><br><hr><br>
+            <img class="center-image" src="{{url_for('static', filename='site_images/DnD_Ghoul.png')}}"><br>
+        </div>
+    </div>
+</div>
+{% endblock %}
