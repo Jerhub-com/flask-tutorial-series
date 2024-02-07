@@ -274,9 +274,9 @@ def contact():
                                     body_html=body_html,
                                     client_address=email)
 
-        if email_1 and email_2:  # If either email failed, user should know.
+        if email_1 and email_2:
             return render_template('contact_thanks.html')
-        else:
+        else:  # If either email failed, user should know.
             return render_template('email_problem.html')
     
     return render_template('contact.html', form=form)

@@ -57,15 +57,28 @@ def contact():
 
     if form.validate_on_submit():
         email = form.email.data
-        name = form.name.data + ' contact form submission'
-        message = form.message.data
+        subject = form.name.data + ' contact form submission'
+        body = form.message.data
+        body_html = f'''
+                <html>
+                <head></head>
+                <body>
+                <h1>{subject}</h1>
+                <p>
+                {body}
+                </p><br>
+                <p>Sent from: {email}</p>
+                </body>
+                </html>
+            '''
 
         # Instantiate the SES wrapper.
         ses = Ses()
 
         # Send an email to your verified SES email address.
-        email_1 = ses.send_email(subject=name,
-                                 body=message,
+        email_1 = ses.send_email(subject=subject,
+                                 body=body,
+                                 body_html=body_html,
                                  client_address=ses.email)
         
         if email_1:  # Only send user email if we got their message.
