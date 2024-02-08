@@ -1,0 +1,7 @@
+**/venv
+**/__pycache__
+data.sqlite
+**/migrations
+**/test.py
+.env
+scaffold/utilities/ses_config.yml
