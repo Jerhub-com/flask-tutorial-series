@@ -227,9 +227,349 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 ```
 
-Next, create a new directory within scaffold called `core`. This directory will
-contain the main application code. Create also directories called `static` and
-`templates`. These directories have names with meanings special to Flask -
+Next, create new directories within scaffold called `core`, `static` and
+`templates`. Static and templates have names with meanings special to Flask -
 templates is where the HTML files will live, and static is where we will place
-files such as images, CSS, and JS.
+files such as images, CSS, and JS. Core is where we will define our views and
+forms.
 
+Inside core, create a file `views.py`, and put this code:
+
+```
+import logging
+
+from flask import render_template, Blueprint
+
+core = Blueprint('core', __name__)
+logger = logging.getLogger('scaffold')
+
+
+@core.route('/')
+def index():
+    return render_template('index.html')
+```
+
+We'll take a moment now to go over what we've done so far. At this point you
+should have an application structure that looks like this:
+
+```
+main folder
+    scaffold
+        core
+            views.py
+        static
+        templates
+
+        __init__.py
+        models.py
+    app.py
+```
+
+We aren't quite ready to try running the app just yet, because we are still
+missing an important piece: templates.
+
+## Templates
+With the templates, we are going to have every page in the application share
+some common traits, such as the navigation bar at the top, styling, and the
+footer at the bottom. Rather than make every html file repeat these, we will
+make one single base template, and then each of the templates for specific
+pages will inherit from the base, so they will only need to add code which is
+unique to that page.
+
+Inside the templates folder, create a file called `base.html`, and place this
+code within:
+```
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Flask Scaffold</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{url_for('static', filename='styles/base.css')}}">
+        <link rel="shortcut icon" href="{{url_for('static', filename='icons/favicon.ico')}}">
+    </head>
+
+    <body>
+
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href={{url_for('core.index')}}>
+                <img src="{{url_for('static', filename='site_images/jerhub_logo.png')}}" style="width:100px; height: 100px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href={{url_for('core.logout')}}>Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href={{url_for('core.login')}}>Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block content %}
+    {% endblock %}
+
+    <hr>
+    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+        <li class="nav-item"><a href={{url_for('core.index')}} class="nav-link px-2 text-muted">Home</a></li>
+    </ul>
+
+    <p class="text-center text-muted">Copyright &copy;
+        <script>
+          document.write(new Date().getFullYear())
+        </script>
+        Jerhub - All Rights Reserved
+      </p>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    </body>
+</html>
+```
+
+Observe that we are using Bootstrap here for styling, because we are focusing
+on backend integrations in this tutorial. Make sure that the bootstrap you are
+using is up to date prior to deploying to production, specifically double check
+on their documentation that your script sources are accurate:
+[bootstrap documentation](https://getbootstrap.com/docs/5.3/getting-started/introduction/).
+
+Observe also that even though we use bootstrap for most things, we are going to
+add just a tiny bit of custom CSS of our own. This is where the `static` folder
+comes into play. Within `scaffold/static` let's create a new folder and call it
+`styles`. Within styles create a file `base.css`:
+```
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: center;
+    align-items: center;
+    margin: 0 auto;
+    gap: 10px;
+    padding: 10px 10px;
+}
+
+.card {
+    display: flex;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px 20px;
+}
+
+.center-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+```
+
+Okay, it isn't going to win any awards, but this should be enough to make it
+responsive and tolerable to the eye.
+
+Next, make a new directory `scaffold/static/site_images`, and within that, you
+should place a picture to use as your logo. If you want, you can use
+`jerhub_logo.png` which is included with this repository. Same thing goes for
+the `favicon.ico` - make a `scaffold/static/icons` folder and put your favicon
+there. Note that if you used your own files for this, you may need to change the
+names in `base.html` to match your files.
+
+We are getting close to being done with this section now, just a couple of more
+steps. Remember when we said that we would make templates which inherit from
+the base template, and then use those to display the page content? Well, let's
+do it, starting with `index.html`:
+```
+{% extends 'base.html' %}
+{% block content %}
+
+<br>
+<div class="flex-container">
+    <div class="card">
+        <p>Your Flask Scaffold is working correctly.</p>
+    </div>
+    <div class="card">
+        <p>Happy Hacking!</p>
+    </div>
+</div>
+
+{% endblock %}
+```
+
+This is the basic pattern which we will use for all the future html templates
+we make - inside base.html, you notice the two lines right next to each other:
+```
+{% block content %}
+{% endblock %}
+```
+
+This is the Jinja way of saying we are going to put something here from
+somewhere else, in this case index.html. We tell jinja that this is the case
+by declaring that the template `extends` base, and we tell it where on the page
+to display the content by using the `block` statement with the same name as
+what was declared in base, in this case we called it `content`. Jinja is pretty
+powerful - you'll notice that we can display things contextually such as with
+`if` statements, etc. For more information, the Flask documentation has some
+great info and examples. We aren't going to dive too deep into it here since
+we really are focusing on backend integrations, but it is good to understand at
+least the basics of jinja, so here is a link to some good info:
+[Flask template docs](https://flask.palletsprojects.com/en/3.0.x/templating/).
+
+As an aside, Flask has really good documentation in general, so we highly
+recommend using it as a reference any time you get confused about what is going
+on in this tutorial.
+
+Next, let's finish up with our templates. We need a few more templates for this
+section:
+- bad_login.html - displays when a user enters incorrect login info
+- error.html - displayed when an error is encountered such as a 404, etc
+- login.html - this is for the login route, which we will cover shortly
+- welcome.html - displayed after a successful login
+
+These files are provided, so you can try to implement them yourself, and refer
+to the provided files if you get stuck. A couple of hints:
+- For error.html, observe in views.py that we are providing the error code to
+the call to render_template. You can then use that information from within the
+template if you wish using the double curly braces `{{}}` and the variable name.
+- For the login page we will be designing a form which the user will fill out,
+so it might make more sense after we've done that. So let's do it right now.
+
+## Login form
+Create a new file `scaffold/core/forms.py`:
+```
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, Length
+
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6, max=64)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=128)])
+    submit = SubmitField('Log In')
+```
+
+The names of these fields are what we are using in the login template, along
+with `hidden_tag`, which is a special hidden form field which WTForms uses to
+provide CSRF (Cross-Site Request Forgery) protection. Remember in `__init__.py`,
+we called csrf protect on our app, so this is where we use it in `login.html`:
+```
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="flex-container">
+    <div class="card">
+        <h1>Login</h1><br>
+        <form method="POST">
+            {{form.hidden_tag()}}
+            {{form.email.label}}<br>
+            {{form.email}}<br><br>
+            {{form.password.label}}<br>
+            {{form.password}}<br><br>
+            {{form.submit()}}
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+```
+
+Time to revisit `views.py` and put this all together:
+```
+import logging
+
+from flask import render_template, Blueprint, url_for, redirect
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.exceptions import HTTPException
+
+from scaffold import db
+from scaffold.models import User
+from scaffold.core.forms import LoginForm
+
+
+core = Blueprint('core', __name__)
+logger = logging.getLogger('scaffold')
+
+
+@core.route('/')
+def index():
+    return render_template('index.html')
+
+@core.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+
+        if user is not None:
+            if user.check_password(form.password.data):
+                login_user(user)
+                return redirect(url_for('core.welcome'))
+            else:
+                error = 'Invalid credentials'
+                return render_template('bad_login.html', error=error)
+        else:
+            error = 'Invalid credentials'
+            return render_template('bad_login.html', error=error)
+        
+    return render_template('login.html', form=form)
+
+@core.route('/welcome')
+@login_required
+def welcome():
+    username = current_user.username
+    return render_template('welcome.html', username=username)
+
+@core.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('core.index'))
+
+@core.app_errorhandler(HTTPException)
+def error(e):
+    """
+    Catchall for HTTPExceptions; shows the custom error page with the code.
+    """
+    return render_template('error.html', code=e.code)
+```
+
+In the login function, we check to see if the user exists in the database, then
+whether the password they entered is valid. If so, we redirect them to the
+welcome page. If not, we display the bad login page. If the form was not
+submitted yet, we skip that and display the login form.
+
+And that's basically it for this section.
+
+## Final thoughts
+That was a lot to take in, so if you got this far then you should be proud of
+yourself! A couple of things to note:
+- If you are using version control, please do make a `.gitignore` file to
+exclude any files or directories which may contain data which should be private.
+I know we've discussed that earlier, but it bears repeating because it is
+important for security.
+- Use virtual environments. Use different ones for each section. Use a 
+`requirements.txt` file to help keep track of your dependencies.
+- Refer back to this document as you proceed with the next parts of this
+tutorial series, as it provides the foundation upon which we build everything
+else.
+- Official documentation is your friend. Use it to understand the things which
+may have you scratching your head.
+- Experiment! Play around with the things you are learning, it will help you
+to understand, and to keep the inspiration flowing.
+- Take breaks. When the brain is full, it needs time to process the new info, so
+give it that time and come back fresh later.
+
+One last thing, you may have noticed that our login form, while it does have at
+least CSRF protection, does not have any way to prevent bots from spamming it.
+Don't worry - we will address this issue in Part 2: ReCaptcha.
