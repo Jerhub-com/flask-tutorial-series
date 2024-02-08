@@ -211,9 +211,9 @@ Next, we need a new class based on FlaskForm:
 
 ```
 class ContactForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    name = StringField('Name', validators=[DataRequired()])
-    message = TextAreaField('Message', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6, max=64)])
+    name = StringField('Name', validators=[DataRequired(), Length(min=1, max=128)])
+    message = TextAreaField('Message', validators=[DataRequired(), Length(min=1, max=500)])
     submit = SubmitField('Submit')
     recaptcha = RecaptchaField()
 ```
@@ -292,10 +292,19 @@ new templates:
 
 Since you already understand creating templates and forms from part 1 of the
 tutorial, these will be left as an excercise. If you get stuck, you can refer
-to the templates we have created in this repo.
+to the templates we have provided in this repo.
 
 ## Step 7: Add link to contact page in the navigation bar
 Whew! That may have felt like kind of a lot, and you aren't wrong. Luckily,
 the last step in this section is easy. All you need to do is locate the
 navigation bar in the base.html template, and add a new list item to the
 unordered list with a link to your shiny new contact page. All done!
+
+
+## Final thoughts
+In this section, we learned to implement one of the most common and fundamental
+functionalities in web applications, the contact form. We used AWS SES to do the
+heavy lifting of the email sending, and we learned a lot in the process.
+
+Stay tuned for Part 4 in this tutorial series, where we will learn to implement
+another common functionality of web apps: blog posts.
