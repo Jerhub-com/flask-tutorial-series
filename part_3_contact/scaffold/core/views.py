@@ -24,7 +24,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = db.session.execute(db.select(User).filter_by(email=form.email.data)).scalar()
 
         if user is not None:
             if user.check_password(form.password.data):
@@ -114,18 +114,6 @@ def contact():
             return render_template('email_problem.html')
     
     return render_template('contact.html', form=form)
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Exceptions
 @core.app_errorhandler(HTTPException)

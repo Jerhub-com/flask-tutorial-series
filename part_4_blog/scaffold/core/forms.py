@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length
+from flask_ckeditor import CKEditorField
 
 
 class LoginForm(FlaskForm):
@@ -16,3 +17,9 @@ class ContactForm(FlaskForm):
     message = TextAreaField('Message', validators=[DataRequired(), Length(min=1, max=500)])
     submit = SubmitField('Submit')
     recaptcha = RecaptchaField()
+
+
+class BlogPostForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    content = CKEditorField('Text', validators=[DataRequired()])
+    submit = SubmitField('Post')

@@ -10,7 +10,6 @@ def load_user(user_id):
 
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(64), unique=True, index=True)

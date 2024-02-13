@@ -10,7 +10,6 @@ def load_user(user_id):
 
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(64), unique=True, index=True)
@@ -25,3 +24,19 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+class BlogPost(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(64), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    title = db.Column(db.String(256), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    published = db.Column(db.Boolean(), default=False)
+
+    def __init__(self, user, date, title, content, published):
+        self.user = user
+        self.date = date
+        self.title = title
+        self.content = content
+        self.published = published

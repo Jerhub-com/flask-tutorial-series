@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="flex-container">
+        <div>
+            <h1>Blog</h1>
+            <button><a href="{{url_for('core.create_post')}}">Create New Post</a></button><br>
+        </div>
+    </div>
+
+    <div class="flex-container">
+        {% for post in posts %}
+            <div class="card">
+                <div>
+                    <h2>{{post.title}}</h2>
+                    <p>Written by {{post.user}} on {{post.date.strftime('%B %d, %Y')}}</p>
+                    <button><a href="{{url_for('core.read_post', post_id=post.id)}}">Read</a></button>
+                    <button><a href="{{url_for('core.update_post', post_id=post.id)}}">Update</a></button>
+                    <button><a href="{{url_for('core.delete_post', post_id=post.id)}}">Delete</a></button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

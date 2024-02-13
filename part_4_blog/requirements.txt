@@ -6,3 +6,4 @@ Flask-WTF
 PyYAML
 email-validator
 boto3
+Flask-CKEditor

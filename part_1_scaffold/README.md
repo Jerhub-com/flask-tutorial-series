@@ -509,7 +509,7 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = db.session.execute(db.select(User).filter_by(email=form.email.data)).scalar()
 
         if user is not None:
             if user.check_password(form.password.data):

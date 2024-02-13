@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="flex-container">
+        <div class="card">
+            <form method="POST">
+                {{form.hidden_tag()}}
+                {{form.title.label}}<br>
+                {{form.title}}<br><br>
+                {{form.content.label}}<br>
+                {{form.content}}<br><br>
+                {{form.submit()}}
+            </form>
+            {{ckeditor.load()}}
+            {{ckeditor.config(name='content')}}
+        </div>
+    </div>
+{% endblock %}

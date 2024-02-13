@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="flex-container">
+        <div class="card">
+            <div>
+                <h1>{{post.title}}</h1>
+                    <p>Written by {{post.user}} on {{post.date.strftime('%B %d, %Y')}}</p><hr>
+                {{post.content|safe}}
+
+                {% if current_user.admin %}
+                    <div>
+                        <button><a href="{{url_for('core.update_post', post_id=post.id)}}">Edit</a></button>
+
+                        <form action="{{url_for('core.delete_post', post_id=post.id)}}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+                            <input type="submit" value="Delete">
+                        </form>
+
+                        {% if not post.published %}
+                            <form action="{{url_for('core.publish_post', post_id=post.id)}}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+                                <input type="submit" value="Publish">
+                            </form>
+                        {% else %}
+                            <form action="{{url_for('core.publish_post', post_id=post.id)}}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{csrf_token()}}"/>
+                                <input type="submit" value="Un-Publish">
+                            </form>
+                        {% endif %}
+                        
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
