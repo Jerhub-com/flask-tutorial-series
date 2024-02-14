@@ -20,6 +20,6 @@ class ContactForm(FlaskForm):
 
 
 class BlogPostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired(), Length(min=1, max=128)])
     content = CKEditorField('Text', validators=[DataRequired()])
     submit = SubmitField('Post')
