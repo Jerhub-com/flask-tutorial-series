@@ -14,7 +14,10 @@ functionality.
 
 **Part 3 - Contact** - Covers adding a working contact form with AWS SES.
 
-**Part 4 - Blog** - COMING SOON!
+**Part 4 - Blog** - Covers adding blogging functionality to the app, integrating
+a WYSIWYG editor, and model, views, and templates to demonstrate its use.
+
+**Part 5 -** To be determined; stay tuned!
 
 ## Requirements
 In order to follow along successfully, you will need:
