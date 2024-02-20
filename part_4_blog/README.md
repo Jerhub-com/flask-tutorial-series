@@ -357,6 +357,55 @@ This one is slightly tricky, so I'll provide the full example below.
 {% endblock %}
 ```
 
+## Sanitize Form Data
+The [Flask-CKEditor docs](https://flask-ckeditor.readthedocs.io/en/latest/basic.html#clean-the-data) suggest to use a built-in method called 'cleanify' to
+sanitize the HTML data prior to working with it, which is a great suggestion.
+The issue with their method though, is that it makes use of a now depricated
+package called 'bleach' behind the scenes. It is a good idea to try to keep your
+application dependencies up to date, and when one goes the way of the Dodo, it
+is time to start looking for alternative solutions.
+
+Enter NH3 (Ammonia). [NH3 docs](https://nh3.readthedocs.io/en/latest/)
+
+This is a good thing to do not only where we expect to find html in a form
+submission, but also where we don't expect it but malicious users might try to
+do some tomfoolery with our forms.
+
+First, `import nh3`. Next, in `core/views.py` let's adjust the `create_post` and `update_post` functions to make use of NH3. In `create_post,` after the checks
+for `if validate_on_submit()`, change the BlogPost instantiation to look like
+this:
+```
+blog_post = BlogPost(user=user.username,
+                     date=datetime.datetime.now(),
+                     title=nh3.clean(form.title.data),
+                     content=nh3.clean(form.content.data),
+                     published=False)
+```
+
+Then in `update_post`, revise it similarly:
+```
+if form.validate_on_submit():
+        blog_post.title = nh3.clean(form.title.data)
+        blog_post.content=nh3.clean(form.content.data)
+        db.session.commit()
+```
+
+Next, let's check the `login` and `contact` views to see if we need to pour any
+ammonia on those too. For the login form, observe the types of the fields we
+defined in `core.forms.py`:
+```
+email = StringField('Email', validators=[DataRequired(), Email(), Length(min=6, max=64)])
+password = PasswordField('Password', validators=[DataRequired(), Length(min=6, max=128)])
+```
+In the [wtforms docs](https://wtforms.readthedocs.io/en/2.3.x/fields/), we can
+see that the PasswordField is basically a StringField, so we can do a clean on
+both email and password in `core.views.py` `login` view.
+
+Similarly, do the same process for the `contact` view. Examine your form field
+types and clean the ones that need cleaning: email, name, and message fields in
+this case. If you get stuck, refer to our provided files.
+
+## Conclusion
 And that's it! My sincere congratulations to you for completing part 4 of the
 Jerhub Flask Tutorial Series. I hope you were able to take away some good info,
 and most importantly, I hope you had fun! See you next time~

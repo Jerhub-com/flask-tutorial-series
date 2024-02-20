@@ -2,6 +2,7 @@ import logging
 import os
 import datetime
 
+import nh3
 from flask import render_template, Blueprint, url_for, redirect, current_app, send_from_directory, request, abort
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.exceptions import HTTPException
@@ -27,10 +28,12 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = db.session.execute(db.select(User).filter_by(email=form.email.data)).scalar()
+        email = nh3.clean(form.email.data)
+        user = db.session.execute(db.select(User).filter_by(email=email)).scalar()
+        password = nh3.clean(form.password.data)
 
         if user is not None:
-            if user.check_password(form.password.data):
+            if user.check_password(password):
                 login_user(user)
                 return redirect(url_for('core.welcome'))
             else:
@@ -61,9 +64,9 @@ def contact():
     form = ContactForm()
 
     if form.validate_on_submit():
-        email = form.email.data
-        subject = form.name.data + ' contact form submission'
-        body = form.message.data
+        email = nh3.clean(form.email.data)
+        subject = nh3.clean(form.name.data) + ' contact form submission'
+        body = nh3.clean(form.message.data)
         body_html = f'''
                 <html>
                 <head></head>
@@ -185,13 +188,11 @@ def create_post():
     form = BlogPostForm()
 
     if form.validate_on_submit():
-        user = db.session.execute(db.select(User).filter_by(id=current_user.id)).scalar()
-        date = datetime.datetime.now()
-        blog_post = BlogPost(user=user.username,
-                             date=date,
-                             title=form.title.data,
-                             content=form.content.data,
-                             published=False)
+        blog_post = BlogPost(user=current_user.username,
+                     date=datetime.datetime.now(),
+                     title=nh3.clean(form.title.data),
+                     content=nh3.clean(form.content.data),
+                     published=False)
         
         db.session.add(blog_post)
         db.session.commit()
@@ -229,8 +230,8 @@ def update_post(post_id):
     form = BlogPostForm()
 
     if form.validate_on_submit():
-        blog_post.title=form.title.data
-        blog_post.content=form.content.data
+        blog_post.title = nh3.clean(form.title.data)
+        blog_post.content=nh3.clean(form.content.data)
         db.session.commit()
 
         return redirect(url_for('core.read_post', post_id=blog_post.id))

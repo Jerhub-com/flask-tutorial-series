@@ -7,3 +7,4 @@ PyYAML
 email-validator
 boto3
 Flask-CKEditor
+nh3
