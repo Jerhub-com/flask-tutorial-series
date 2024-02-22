@@ -1,4 +1,9 @@
-# flask-tutorial-series
+# Jerhub Flask Tutorial Series
+**Author:** Jeremy Ecker
+
+**Link:** [Jerhub Flask Tutorial Series](https://jerhub.com/tutorials/home)
+--
+
 Welcome to the Jerhub Flask tutorial series. In this series, we will learn how
 to create web applications with Python and Flask. The focus will be on various
 backend integrations rather than frontend pretties, though basic templates will

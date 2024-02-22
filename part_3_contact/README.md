@@ -1,3 +1,9 @@
+# Jerhub Flask Tutorial Series
+**Author:** Jeremy Ecker
+
+**Link:** [Jerhub Flask Tutorial Series](https://jerhub.com/tutorials/home)
+--
+
 # Part 3: Contact
 In this section, we will add a functioning contact form which will send emails
 via AWS SES (Simple Email Service).

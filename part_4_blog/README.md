@@ -1,3 +1,9 @@
+# Jerhub Flask Tutorial Series
+**Author:** Jeremy Ecker
+
+**Link:** [Jerhub Flask Tutorial Series](https://jerhub.com/tutorials/home)
+--
+
 # Part 4: Blog
 In this section, we will discuss adding blogging capabilities to the
 application. We will integrate a WYSIWYG (What You See Is What You Get) editor,

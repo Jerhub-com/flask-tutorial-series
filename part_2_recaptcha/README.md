@@ -1,3 +1,9 @@
+# Jerhub Flask Tutorial Series
+**Author:** Jeremy Ecker
+
+**Link:** [Jerhub Flask Tutorial Series](https://jerhub.com/tutorials/home)
+--
+
 # flask-recaptcha - Instructions for adding Google Recaptcha to a Flask app
 Welcome to part 2 of the Jerhub tutorial series. In this part, we are going to
 address an issue we have with what we did in part 1: bot mitigation. Google

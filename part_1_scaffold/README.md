@@ -1,3 +1,9 @@
+# Jerhub Flask Tutorial Series
+**Author:** Jeremy Ecker
+
+**Link:** [Jerhub Flask Tutorial Series](https://jerhub.com/tutorials/home)
+--
+
 # Part 1: Scaffold
 Covers installation and configuration, and provides the foundation from which we
 build the application, including a basic app with a sqlite database, a user
@@ -12,7 +18,7 @@ need to understand.
 
 ### Clone the repository
 ```
-git clone https://github.com/Jerhub-com/flask-scaffold.git
+git clone https://github.com/Jerhub-com/flask-tutorial-series.git
 ```
 
 ### Create a virtual environment
@@ -98,6 +104,7 @@ python app.py
 ```
 
 ### Create an admin user
+Open a separate terminal and use flask shell to create your admin user:
 ```
 flask shell
 >>> from create_admin import CreateAdmin
@@ -152,6 +159,11 @@ from scaffold import app
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
 ```
+
+**Important Note:** Make sure to remove the `debug=True` prior to deploying to
+a publicly accessible server. We have enabled it for local development in order
+to help troubleshoot any errors, but having it enabled on a public server
+introduces security risks.
 
 Sounds pretty good so far, but the scaffold folder doesn't yet contain anything.
 Let's fix that. Within the scaffold folder, we will create a new file called
