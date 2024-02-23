@@ -38,6 +38,7 @@ ckeditor = CKEditor(app)
 
 ## Model
 For the model we are going to need several columns, namely:
+
 - user - string of the username
 - date - datetime of publication
 - title - string of the title
@@ -52,6 +53,7 @@ provided code.
 ## Form
 In `core/forms.py`, add a new form named `BlogPostForm`. Within it, add three
 fields:
+
 - title
 - content
 - submit
@@ -219,6 +221,7 @@ provided solution if you run into issues.
 ## Templates
 In addition to a slight modification to `base.html`, there will be several new
 templates required:
+
 - blog.html
 - blog_admin.html
 - create_post.html

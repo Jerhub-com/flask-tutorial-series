@@ -26,6 +26,7 @@ a WYSIWYG editor, and model, views, and templates to demonstrate its use.
 
 ## Requirements
 In order to follow along successfully, you will need:
+
 - Python version >= 3.10.5 - 
 [Get Python](https://www.python.org/downloads/)
 - git - 

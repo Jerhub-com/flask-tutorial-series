@@ -117,6 +117,7 @@ Password: super-secret-password <-- Write this down; you won't see it again.
 ```
 
 ### Visiting your web app
+
 - Open a web browser
 - Navigate to `http:your_IP_address:5000`, for example:
 ```
@@ -443,6 +444,7 @@ on in this tutorial.
 
 Next, let's finish up with our templates. We need a few more templates for this
 section:
+
 - bad_login.html - displays when a user enters incorrect login info
 - error.html - displayed when an error is encountered such as a 404, etc
 - login.html - this is for the login route, which we will cover shortly
@@ -450,6 +452,7 @@ section:
 
 These files are provided, so you can try to implement them yourself, and refer
 to the provided files if you get stuck. A couple of hints:
+
 - For error.html, observe in views.py that we are providing the error code to
 the call to render_template. You can then use that information from within the
 template if you wish using the double curly braces `{{}}` and the variable name.
@@ -566,6 +569,7 @@ And that's basically it for this section.
 ## Final thoughts
 That was a lot to take in, so if you got this far then you should be proud of
 yourself! A couple of things to note:
+
 - If you are using version control, please do make a `.gitignore` file to
 exclude any files or directories which may contain data which should be private.
 I know we've discussed that earlier, but it bears repeating because it is
